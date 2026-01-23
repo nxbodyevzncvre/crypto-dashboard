@@ -1,11 +1,19 @@
-<script setup lang="ts"></script>
-
 <template>
-<h1 class="text-3xl font-bold underline">
-    Hello world!
-  </h1>  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <div class="min-h-screen bg-slate-950">
+    <NavBar />
+    <main class="container mx-auto px-4 py-6">
+      <router-view />
+    </main>
+  </div>
 </template>
 
+<script>
+import NavBar from './components/NavBar.vue'
+
+export default {
+  name: 'App',
+  components: {
+    NavBar
+  }
+}
+</script>
