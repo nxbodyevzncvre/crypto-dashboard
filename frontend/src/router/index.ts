@@ -3,7 +3,7 @@ import DashboardView from "../views/DashboardView.vue"
 import CoinsView from "../views/CoinsView.vue"
 import CoinDetailView from "../views/CoinDetailView.vue"
 import PortfolioView from "../views/PortfolioView.vue"
-import NewsView from "../views/NewsView.vue"
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,11 +27,6 @@ const router = createRouter({
       path: "/portfolio",
       name: "portfolio",
       component: PortfolioView,
-    },
-    {
-      path: "/news",
-      name: "news",
-      component: NewsView,
     },
   ],
 })

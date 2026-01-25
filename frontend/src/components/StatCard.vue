@@ -63,7 +63,8 @@ export default {
     iconColor: {
       type: String,
       default: 'amber'
-    }
+    },
+     
   },
   computed: {
     formattedValue() {

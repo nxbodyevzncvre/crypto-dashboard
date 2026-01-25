@@ -108,7 +108,7 @@
                 </div>
               </div>
               <span class="text-emerald-400 font-semibold">
-                +{{ coin.price_change_percentage_24h?.toFixed(2) }}%
+                +{{ coin.percent_change_24h?.toFixed(2) }}%
               </span>
             </div>
           </div>
@@ -131,7 +131,7 @@
                 </div>
               </div>
               <span class="text-red-400 font-semibold">
-                {{ coin.price_change_percentage_24h?.toFixed(2) }}%
+                {{ coin.percent_change_24h?.toFixed(2) }}%
               </span>
             </div>
           </div>
@@ -177,7 +177,7 @@ export default defineComponent({
     ]),
 
     async refreshData() {
-      await this.fetchCoins(true)
+      await this.fetchCoins(1, true)
       await this.fetchGlobalData(true)
     },
 
