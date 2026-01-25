@@ -10,6 +10,7 @@ export default defineConfig({
     vueDevTools(),
     tailwindcss(),
   ],
+  base: '/crypto-dashboard/',
 
   resolve: {
     alias: {
