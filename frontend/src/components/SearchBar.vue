@@ -8,7 +8,7 @@
     <input
       type="text"
       :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
+      @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
       :placeholder="placeholder"
       class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400 transition-colors"
     />
@@ -23,20 +23,26 @@
     </button>
   </div>
 </template>
+<script lang="ts">
+import { defineComponent } from 'vue'
 
-<script>
-export default {
+export default defineComponent({
   name: 'SearchBar',
+
   props: {
     modelValue: {
       type: String,
       default: ''
     },
+
     placeholder: {
       type: String,
       default: 'Search cryptocurrencies...'
     }
   },
-  emits: ['update:modelValue']
-}
+
+  emits: {
+    'update:modelValue': (value: string) => true
+  }
+})
 </script>

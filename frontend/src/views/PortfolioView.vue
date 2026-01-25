@@ -46,20 +46,23 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue'
 import { mapState, mapActions } from 'pinia'
-import { usePortfolioStore } from '@/stores/portfolioStore'
-import { useCryptoStore } from '@/stores/cryptoStore'
 
-export default {
+import { usePortfolioStore, type PortfolioItem } from '@/stores/portfolioStore'
+import { useCryptoStore, type Coin } from '@/stores/cryptoStore'
+
+export default defineComponent({
   name: 'PortfolioView',
 
   computed: {
     ...mapState(usePortfolioStore, ['items']),
     ...mapState(useCryptoStore, ['coins']),
 
-    portfolio() {
-      return this.items
+
+    portfolio(): PortfolioItem[] {
+      return this.items as PortfolioItem[]
     },
   },
 
@@ -67,22 +70,23 @@ export default {
     ...mapActions(usePortfolioStore, ['remove']),
     ...mapActions(useCryptoStore, ['fetchCoins']),
 
-    getPrice(symbol) {
-      const coin = this.coins.find(
+    getPrice(symbol: string): number {
+      const coin = (this.coins as Coin[]).find(
         c => c.symbol.toLowerCase() === symbol.toLowerCase()
       )
-      return coin?.current_price || 0
+
+      return coin?.current_price ?? 0
     },
 
-    currentValue(item) {
+    currentValue(item: PortfolioItem): number {
       return item.amount * this.getPrice(item.symbol)
     },
 
-    pnl(item) {
+    pnl(item: PortfolioItem): number {
       return this.currentValue(item) - item.amount * item.buyPrice
     },
 
-    pnlPercent(item) {
+    pnlPercent(item: PortfolioItem): number {
       const invested = item.amount * item.buyPrice
       return invested
         ? (this.pnl(item) / invested) * 100
@@ -90,15 +94,16 @@ export default {
     },
   },
 
-  async mounted() {
+  async mounted(): Promise<void> {
     const portfolio = usePortfolioStore()
 
     portfolio.load()
 
-    if (!this.coins.length) {
+    if (!(this.coins as Coin[]).length) {
       await this.fetchCoins()
     }
   },
-}
+})
 </script>
+
 

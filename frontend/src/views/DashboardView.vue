@@ -140,11 +140,10 @@
     </div>
   </div>
 </template>
-
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { mapState, mapActions } from 'pinia'
-import { useCryptoStore } from '@/stores/cryptoStore'
+import { useCryptoStore, type Coin } from '@/stores/cryptoStore'
 
 import StatCard from '@/components/StatCard.vue'
 import CoinCard from '@/components/CoinCard.vue'
@@ -153,7 +152,11 @@ import LoadingSpinner from '@/components/LoadingSpinner.vue'
 export default defineComponent({
   name: 'DashboardView',
 
-  components: { StatCard, CoinCard, LoadingSpinner },
+  components: {
+    StatCard,
+    CoinCard,
+    LoadingSpinner,
+  },
 
   computed: {
     ...mapState(useCryptoStore, [
@@ -165,8 +168,9 @@ export default defineComponent({
       'topLosers',
     ]),
 
-    topCoins() {
-      return this.coins.slice(0, 6)
+
+    topCoins(): Coin[] {
+      return (this.coins as Coin[]).slice(0, 6)
     },
   },
 
@@ -176,7 +180,7 @@ export default defineComponent({
       'fetchGlobalData',
     ]),
 
-    async refreshData() {
+    async refreshData(): Promise<void> {
       await this.fetchCoins(1, true)
       await this.fetchGlobalData(true)
     },
@@ -199,16 +203,19 @@ export default defineComponent({
       return price.toPrecision(4)
     },
 
-    goToCoin(coin: { id: string }) {
-      this.$router.push({ name: 'coin-detail', params: { id: coin.id } })
+
+    goToCoin(coin: Coin): void {
+      this.$router.push({
+        name: 'coin-detail',
+        params: { id: coin.id },
+      })
     },
   },
 
   mounted() {
-
     this.fetchCoins()
     this.fetchGlobalData()
-    
   },
 })
 </script>
+

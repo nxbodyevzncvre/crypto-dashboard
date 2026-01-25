@@ -35,50 +35,64 @@
     </div>
   </div>
 </template>
+<script lang="ts">
+import { defineComponent } from 'vue'
+import type { PropType } from 'vue'
 
-<script>
-export default {
+
+type IconColor = 'amber' | 'emerald' | 'blue' | 'purple'
+
+export default defineComponent({
   name: 'StatCard',
+
   props: {
     title: {
       type: String,
       required: true
     },
+
     value: {
-      type: [String, Number],
+      type: [String, Number] as PropType<string | number>,
       required: true
     },
+
     change: {
-      type: Number,
+      type: Number as PropType<number | null>,
       default: null
     },
+
     prefix: {
       type: String,
       default: ''
     },
+
     suffix: {
       type: String,
       default: ''
     },
+
     iconColor: {
-      type: String,
+      type: String as PropType<IconColor>,
       default: 'amber'
-    },
-     
+    }
   },
+
   computed: {
-    formattedValue() {
+    formattedValue(): string {
       return `${this.prefix}${this.value}${this.suffix}`
     },
-    iconBgClass() {
-      const colors = {
+
+    iconBgClass(): string {
+      const colors: Record<IconColor, string> = {
         amber: 'bg-amber-400/10',
         emerald: 'bg-emerald-400/10',
         blue: 'bg-blue-400/10',
         purple: 'bg-purple-400/10'
       }
-      return colors[this.iconColor] || colors.amber
+
+      return colors[this.iconColor]
     }
   }
-}
+})
 </script>
+

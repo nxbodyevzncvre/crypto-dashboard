@@ -76,39 +76,66 @@
 
 
 
+<script lang="ts">
+import { defineComponent } from 'vue'
+import type {PropType} from 'vue'
 
-<script>
-export default {
+import type { Coin } from '@/stores/cryptoStore'
+
+export default defineComponent({
   name: 'CoinTable',
+
   props: {
     coins: {
-      type: Array,
+      type: Array as PropType<Coin[]>,
       required: true
     }
   },
-  emits: ['select'],    
+
+  emits: {
+    select: (coin: Coin) => true
+  },
+
   methods: {
-    formatPrice(price) {
+    formatPrice(price: number): string {
       if (!price) return '0.00'
-      if (price >= 1) return price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
+      if (price >= 1) {
+        return price.toLocaleString('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })
+      }
+
       return price.toPrecision(4)
     },
-    formatNumber(num) {
+
+    formatNumber(num: number): string {
       if (!num) return '0'
+
       if (num >= 1e12) return (num / 1e12).toFixed(2) + 'T'
       if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B'
       if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M'
+
       return num.toLocaleString()
     },
-    formatChange(value) {
+
+    formatChange(value: number | null | undefined): string {
       if (value === null || value === undefined) return '-'
+
       const sign = value >= 0 ? '+' : ''
       return `${sign}${value.toFixed(2)}%`
     },
-    getChangeClass(value) {
-      if (value === null || value === undefined) return 'text-slate-400'
-      return value >= 0 ? 'text-emerald-400 font-medium' : 'text-red-400 font-medium'
+
+    getChangeClass(value: number | null | undefined): string {
+      if (value === null || value === undefined) {
+        return 'text-slate-400'
+      }
+
+      return value >= 0
+        ? 'text-emerald-400 font-medium'
+        : 'text-red-400 font-medium'
     }
   }
-}
+})
 </script>

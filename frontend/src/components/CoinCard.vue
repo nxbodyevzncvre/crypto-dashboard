@@ -52,38 +52,48 @@
     </div>
   </div>
 </template>
+<script lang="ts">
+import { defineComponent } from 'vue'
+import type {PropType} from 'vue'
+import type { Coin } from '@/stores/cryptoStore'
 
-<script>
-export default {
+export default defineComponent({
   name: 'CoinCard',
 
   props: {
     coin: {
-      type: Object,
-      required: true,
-    },
+      type: Object as PropType<Coin>,
+      required: true
+    }
   },
 
-  emits: ['click'],
+  emits: {
+    click: (coin: Coin) => true
+  },
 
   methods: {
-    formatPrice(price) {
+    formatPrice(price: number): string {
       if (!price) return '0.00'
-      if (price >= 1)
+
+      if (price >= 1) {
         return price.toLocaleString('en-US', {
           minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
+          maximumFractionDigits: 2
         })
+      }
+
       return price.toPrecision(4)
     },
 
-    formatNumber(num) {
+    formatNumber(num: number): string {
       if (!num) return '0'
+
       if (num >= 1e12) return (num / 1e12).toFixed(2) + 'T'
       if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B'
       if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M'
+
       return num.toLocaleString()
-    },
-  },
-}
+    }
+  }
+})
 </script>

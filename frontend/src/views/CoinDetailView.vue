@@ -139,15 +139,16 @@
 
   </div>
 </template>
-
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { mapState } from 'pinia'
-import { useCryptoStore } from '@/stores/cryptoStore'
+import { useCryptoStore, type Coin } from '@/stores/cryptoStore'
 import { usePortfolioStore } from '@/stores/portfolioStore'
 import TradingViewChart from '@/components/TradingViewChart.vue'
 
 export default defineComponent({
+  name: 'CoinDetailView',
+
   components: { TradingViewChart },
 
   data() {
@@ -165,31 +166,32 @@ export default defineComponent({
       return usePortfolioStore()
     },
 
-    coin() {
+
+    coin(): Coin | undefined {
       return this.coins.find(
-        c => c.id === this.$route.params.id
+        (c: Coin) => c.id === this.$route.params.id
       )
     },
 
-    totalInvested() {
+    totalInvested(): number {
       return this.portfolio.items.reduce(
-        (s, i) => s + i.amount * i.buyPrice,
+        (sum, i) => sum + i.amount * i.buyPrice,
         0
       )
     },
 
-    currentValueTotal() {
+    currentValueTotal(): number {
       return this.portfolio.items.reduce(
-        (s, i) => s + i.amount * this.getPrice(i.symbol),
+        (sum, i) => sum + i.amount * this.getPrice(i.symbol),
         0
       )
     },
 
-    totalPnl() {
+    totalPnl(): number {
       return this.currentValueTotal - this.totalInvested
     },
 
-    totalPnlPercent() {
+    totalPnlPercent(): number {
       return this.totalInvested
         ? (this.totalPnl / this.totalInvested) * 100
         : 0
@@ -197,32 +199,38 @@ export default defineComponent({
   },
 
   methods: {
-    getPrice(symbol: string) {
+    getPrice(symbol: string): number {
       const crypto = useCryptoStore()
+
       const coin = crypto.coins.find(
-        c => c.symbol.toLowerCase() === symbol.toLowerCase()
+        (c: Coin) =>
+          c.symbol.toLowerCase() === symbol.toLowerCase()
       )
-      return coin?.current_price || 0
+
+      return coin?.current_price ?? 0
     },
 
-    formatPrice(price: number) {
+    formatPrice(price: number): string {
       if (!price) return '0.00'
-      if (price >= 1)
+
+      if (price >= 1) {
         return price.toLocaleString('en-US', {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         })
+      }
+
       return price.toPrecision(4)
     },
 
-    formatLargeNumber(n: number) {
+    formatLargeNumber(n: number): string {
       if (n >= 1e12) return (n / 1e12).toFixed(2) + 'T'
       if (n >= 1e9) return (n / 1e9).toFixed(2) + 'B'
       if (n >= 1e6) return (n / 1e6).toFixed(2) + 'M'
       return n.toLocaleString()
     },
 
-    addToPortfolio() {
+    addToPortfolio(): void {
       if (!this.coin) return
 
       const price =
@@ -245,7 +253,6 @@ export default defineComponent({
       this.amount = 0
       this.buyPrice = 0
     },
-
   },
 })
 </script>

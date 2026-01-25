@@ -57,46 +57,70 @@
   </div>
 </template>
 
-<script>
-import { mapState, mapActions } from 'pinia'
-import { useCryptoStore } from '../stores/cryptoStore'
-import CoinTable from '../components/CoinTable.vue'
-import SearchBar from '../components/SearchBar.vue'
-import LoadingSpinner from '../components/LoadingSpinner.vue'
 
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue'
+import { mapState, mapActions } from 'pinia'
+import { useCryptoStore, type Coin } from '@/stores/cryptoStore'
+
+import CoinTable from '@/components/CoinTable.vue'
+import SearchBar from '@/components/SearchBar.vue'
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
+
+export default defineComponent({
   name: 'CoinsView',
+
   components: {
     CoinTable,
     SearchBar,
-    LoadingSpinner
+    LoadingSpinner,
   },
+
   data() {
     return {
-      searchQuery: ''
+      searchQuery: '' as string,
     }
   },
+
   computed: {
-    ...mapState(useCryptoStore, ['coins', 'loadingCoins', 'page','limit','total',]),
-    filteredCoins() {
-      if (!this.searchQuery) return this.coins
+    ...mapState(useCryptoStore, [
+      'coins',
+      'loadingCoins',
+      'page',
+      'limit',
+      'total',
+    ]),
+
+
+    filteredCoins(): Coin[] {
+      if (!this.searchQuery) return this.coins as Coin[]
+
       const query = this.searchQuery.toLowerCase()
-      return this.coins.filter(
-        coin => coin.name.toLowerCase().includes(query) || coin.symbol.toLowerCase().includes(query)
+
+      return (this.coins as Coin[]).filter(
+        (coin: Coin) =>
+          coin.name.toLowerCase().includes(query) ||
+          coin.symbol.toLowerCase().includes(query)
       )
-    }
+    },
   },
+
   methods: {
     ...mapActions(useCryptoStore, ['fetchCoins']),
-    goToCoin(coin) {
-      this.$router.push({ name: 'coin-detail', params: { id: coin.id } })
-    }
+
+
+    goToCoin(coin: Coin): void {
+      this.$router.push({
+        name: 'coin-detail',
+        params: { id: coin.id },
+      })
+    },
   },
+
   mounted() {
-    if (this.coins.length === 0) {
+    if ((this.coins as Coin[]).length === 0) {
       this.fetchCoins()
     }
-    console.log(this.filteredCoins)
-  }
-}
+  },
+})
 </script>
